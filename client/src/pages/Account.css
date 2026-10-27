@@ -1,0 +1,223 @@
+
+.account-page {
+  max-width: 1100px;
+  min-height: 65vh;
+  margin: 0 auto;
+  padding: 64px 32px 80px;
+  color: #29231f;
+}
+
+.account-heading {
+  margin-bottom: 40px;
+}
+
+.account-eyebrow {
+  margin-bottom: 12px;
+  color: #a6533c;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 2px;
+}
+
+.account-heading h1 {
+  margin: 0 0 12px;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(36px, 5vw, 52px);
+  font-weight: 500;
+}
+
+.account-heading > p:last-child {
+  color: #766d65;
+  line-height: 1.7;
+}
+
+.account-profile,
+.account-orders {
+  margin-bottom: 28px;
+  padding: 28px;
+  border: 1px solid #e5dbcf;
+  background: #faf6ef;
+}
+
+.account-profile {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.account-profile h2,
+.account-orders h2 {
+  margin: 0 0 20px;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 26px;
+  font-weight: 500;
+}
+
+.account-profile p,
+.account-order p {
+  margin: 10px 0;
+  color: #655b53;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.account-profile strong,
+.account-order strong {
+  color: #29231f;
+}
+
+.account-logout,
+.account-empty button {
+  padding: 12px 20px;
+  border: 1px solid #a6533c;
+  background: transparent;
+  color: #a6533c;
+  font: inherit;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.account-logout:hover,
+.account-empty button:hover {
+  background: #a6533c;
+  color: #fffaf4;
+}
+
+.account-orders h2 {
+  margin-bottom: 24px;
+}
+
+.account-empty {
+  padding: 24px 0;
+  color: #766d65;
+}
+
+.account-empty button {
+  margin-top: 12px;
+}
+
+.account-error {
+  color: #a33225;
+}
+
+.account-order-list {
+  display: grid;
+  gap: 16px;
+}
+
+.account-order {
+  padding: 20px;
+  border: 1px solid #e5dbcf;
+  background: #fffdf9;
+}
+
+.account-order-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.account-order-top h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.account-order-top span {
+  padding: 6px 10px;
+  background: #f1e4d9;
+  color: #8c4935;
+  font-size: 12px;
+  text-transform: capitalize;
+}
+
+@media (max-width: 600px) {
+  .account-page {
+    padding: 40px 18px 56px;
+  }
+
+  .account-profile {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 22px;
+  }
+
+  .account-orders {
+    padding: 22px;
+  }
+
+  .account-order {
+    padding: 16px;
+  }
+}
+
+.account-profile-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.account-profile-form {
+  display: grid;
+  gap: 10px;
+  max-width: 420px;
+  margin-top: 16px;
+}
+
+.account-profile-form input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #d8d0c7;
+  border-radius: 8px;
+  font: inherit;
+  background: #fffdf9;
+  color: #24211e;
+}
+
+.account-profile-form input:focus {
+  outline: 2px solid #b9654b;
+  outline-offset: 2px;
+}
+
+.account-profile-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.account-profile-actions button,
+.account-profile-details > button {
+  padding: 10px 16px;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.account-profile-actions button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.account-cancel {
+  background: #eee8e1;
+  color: #24211e;
+}
+
+.account-success {
+  color: #247442;
+  margin-top: 12px;
+}
+
+@media (max-width: 600px) {
+  .account-profile {
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .account-profile-details {
+    width: 100%;
+  }
+}
