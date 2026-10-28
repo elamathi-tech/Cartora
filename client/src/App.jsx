@@ -7,6 +7,7 @@ import ProductDetails from './pages/ProductDetails'
 import Register from './pages/Register'
 import Login from './pages/Login'
 import Account from './pages/Account'
+import AdminDashboard from './pages/AdminDashboard'
 import './App.css'
 
 const categories = [
@@ -178,6 +179,7 @@ function App() {
         <Route path='/register' element={<Register />} />
         <Route path='/login' element={<Login />} />
         <Route path='/account' element={<Account />} />
+        <Route path="/admin" element={<AdminDashboard />} />
       </Routes>
 
       <footer className='site-footer'>
