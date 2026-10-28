@@ -2,6 +2,7 @@ const express = require('express')
 const Order = require('../models/Order')
 const Product = require('../models/Product')
 const authMiddleware = require('../middleware/authMiddleware')
+const adminMiddleware = require('../middleware/adminMiddleware')
 
 const router = express.Router()
 
@@ -131,5 +132,84 @@ router.post('/', authMiddleware, async (req, res) => {
     })
   }
 })
+
+// Admin: Get all customer orders
+router.get(
+  '/admin/all',
+  authMiddleware,
+  adminMiddleware,
+  async (req, res) => {
+    try {
+      const orders = await Order.find().sort({ createdAt: -1 })
+
+      return res.status(200).json({
+        success: true,
+        orders,
+      })
+    } catch (error) {
+      console.error('Fetch all orders error:', error)
+
+      return res.status(500).json({
+        success: false,
+        message: 'Failed to fetch all orders.',
+      })
+    }
+  },
+)
+
+
+const allowedOrderStatuses = [
+  'Placed',
+  'Processing',
+  'Shipped',
+  'Delivered',
+  'Cancelled',
+]
+
+// Admin: Update an order's status
+router.patch(
+  '/admin/:orderId/status',
+  authMiddleware,
+  adminMiddleware,
+  async (req, res) => {
+    try {
+      const { status } = req.body
+
+      if (!allowedOrderStatuses.includes(status)) {
+        return res.status(400).json({
+          success: false,
+          message: 'Invalid order status.',
+        })
+      }
+
+      const order = await Order.findByIdAndUpdate(
+        req.params.orderId,
+        { status },
+        { new: true, runValidators: true },
+      )
+
+      if (!order) {
+        return res.status(404).json({
+          success: false,
+          message: 'Order not found.',
+        })
+      }
+
+      return res.status(200).json({
+        success: true,
+        message: 'Order status updated successfully.',
+        order,
+      })
+    } catch (error) {
+      console.error('Update order status error:', error)
+
+      return res.status(500).json({
+        success: false,
+        message: 'Failed to update order status.',
+      })
+    }
+  },
+)
+
 
 module.exports = router

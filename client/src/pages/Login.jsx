@@ -55,7 +55,7 @@ function Login() {
         return
       }
 
-      navigate('/')
+      navigate(data.user.role === 'admin' ? '/admin' : '/')
 
 
     } catch (err) {

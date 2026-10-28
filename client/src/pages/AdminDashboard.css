@@ -270,3 +270,93 @@
     padding: 16px;
   }
 }
+
+
+
+.admin-product-actions {
+  white-space: nowrap;
+}
+
+.admin-product-actions button {
+  padding: 8px 16px;
+  border: 1px solid #c9795b;
+  border-radius: 6px;
+  background-color: #fff8f3;
+  color: #8f4b35;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.admin-product-actions button:hover {
+  background-color: #c9795b;
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.admin-product-actions button:focus-visible {
+  outline: 2px solid #8f4b35;
+  outline-offset: 3px;
+}
+
+
+
+.admin-product-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-product-actions .admin-delete-button {
+  padding: 8px 16px;
+  border: 1px solid #d8a09a;
+  border-radius: 6px;
+  background-color: #fff5f4;
+  color: #a33f36;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.admin-product-actions .admin-delete-button:hover {
+  background-color: #a33f36;
+  border-color: #a33f36;
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.admin-product-actions .admin-delete-button:focus-visible {
+  outline: 2px solid #a33f36;
+  outline-offset: 3px;
+}
+
+
+.admin-orders-link {
+  display: inline-block;
+  margin-top: 18px;
+  padding: 12px 20px;
+  border-radius: 6px;
+  background: #a45d43;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.2s ease;
+}
+
+.admin-orders-link:hover {
+  background: #87472f;
+}
+
+.admin-orders-link:focus-visible {
+  outline: 2px solid #87472f;
+  outline-offset: 3px;
+}

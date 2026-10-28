@@ -8,6 +8,7 @@ import Register from './pages/Register'
 import Login from './pages/Login'
 import Account from './pages/Account'
 import AdminDashboard from './pages/AdminDashboard'
+import AdminOrders from './pages/AdminOrders'
 import './App.css'
 
 const categories = [
@@ -153,6 +154,7 @@ function App() {
           <Link to='/featured'>Featured</Link>
         </nav>
 
+
         <div className="header-actions">
           {currentUser ? (
             <Link to="/account" className="header-account">
@@ -164,10 +166,17 @@ function App() {
             </Link>
           )}
 
+          {currentUser?.role === 'admin' && (
+            <Link to="/admin" className="header-account">
+              Admin Dashboard
+            </Link>
+          )}
+
           <Link className="header-cart" to="/cart">
             Bag <span>{cartCount}</span>
           </Link>
         </div>
+
       </header>
 
       <Routes>
@@ -180,6 +189,7 @@ function App() {
         <Route path='/login' element={<Login />} />
         <Route path='/account' element={<Account />} />
         <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/admin/orders" element={<AdminOrders />} />
       </Routes>
 
       <footer className='site-footer'>

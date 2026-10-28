@@ -1,0 +1,242 @@
+
+.admin-orders-page {
+  min-height: 100vh;
+  padding: 48px 6%;
+  background: #f8f5ef;
+  color: #302a25;
+}
+
+.admin-orders-heading {
+  margin-bottom: 32px;
+}
+
+.admin-orders-eyebrow {
+  color: #a45d43;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.admin-orders-heading h1 {
+  margin: 10px 0;
+  font-family: Georgia, serif;
+  font-size: clamp(30px, 4vw, 44px);
+  font-weight: 500;
+}
+
+.admin-orders-heading > p:last-child {
+  color: #756c64;
+  line-height: 1.6;
+}
+
+.admin-orders-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 260px;
+  margin-bottom: 28px;
+  padding: 18px 22px;
+  background: #fffdf9;
+  border: 1px solid #e8dfd4;
+  border-radius: 10px;
+}
+
+.admin-orders-summary span {
+  color: #756c64;
+}
+
+.admin-orders-summary strong {
+  font-size: 25px;
+}
+
+.admin-orders-list {
+  display: grid;
+  gap: 24px;
+}
+
+.admin-order-card {
+  padding: 26px;
+  background: #fffdf9;
+  border: 1px solid #e8dfd4;
+  border-radius: 12px;
+  box-shadow: 0 5px 20px rgb(48 42 37 / 4%);
+}
+
+.admin-order-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #eee6dc;
+}
+
+.admin-order-label {
+  margin: 0 0 8px;
+  color: #8b8076;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+}
+
+.admin-order-top > div > strong {
+  overflow-wrap: anywhere;
+  font-size: 13px;
+}
+
+.admin-order-status {
+  padding: 7px 12px;
+  border-radius: 20px;
+  background: #f3e8dc;
+  color: #8c4e37;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.admin-order-details {
+  padding: 22px 0;
+  border-bottom: 1px solid #eee6dc;
+}
+
+.admin-order-details h2 {
+  margin: 0 0 16px;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.admin-order-details p {
+  margin: 9px 0;
+  color: #655c54;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.admin-order-details p strong {
+  color: #302a25;
+}
+
+.admin-order-item,
+.admin-order-total {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 12px 0;
+  color: #655c54;
+}
+
+.admin-order-item span {
+  overflow-wrap: anywhere;
+}
+
+.admin-order-item strong,
+.admin-order-total strong {
+  color: #302a25;
+  white-space: nowrap;
+}
+
+.admin-order-total {
+  margin-top: 8px;
+  padding-top: 18px;
+  border-top: 1px solid #eee6dc;
+  font-size: 17px;
+}
+
+.admin-order-update {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding-top: 22px;
+}
+
+.admin-order-update label {
+  width: 100%;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.admin-order-update select {
+  min-width: 180px;
+  padding: 11px 12px;
+  border: 1px solid #d9cec1;
+  border-radius: 6px;
+  background: #fffdf9;
+  color: #302a25;
+  font: inherit;
+}
+
+.admin-order-update button {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 6px;
+  background: #a45d43;
+  color: white;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.admin-order-update button:hover:not(:disabled) {
+  background: #87472f;
+}
+
+.admin-order-update button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.admin-orders-message {
+  margin: 16px 0;
+  padding: 13px 16px;
+  border-radius: 7px;
+  line-height: 1.5;
+}
+
+.admin-orders-message.error {
+  background: #fbe9e7;
+  color: #a12d25;
+}
+
+.admin-orders-message.success {
+  background: #e7f3e8;
+  color: #286638;
+}
+
+.admin-orders-empty {
+  padding: 50px 24px;
+  border: 1px dashed #d9cec1;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.admin-orders-empty h2 {
+  font-family: Georgia, serif;
+  font-weight: 500;
+}
+
+.admin-orders-empty p {
+  color: #756c64;
+  line-height: 1.6;
+}
+
+@media (max-width: 600px) {
+  .admin-orders-page {
+    padding: 30px 5%;
+  }
+
+  .admin-order-card {
+    padding: 18px;
+  }
+
+  .admin-order-update select,
+  .admin-order-update button {
+    width: 100%;
+  }
+
+  .admin-order-item,
+  .admin-order-total {
+    font-size: 13px;
+  }
+}

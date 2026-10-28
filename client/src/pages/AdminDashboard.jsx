@@ -1,4 +1,4 @@
-
+import { Link } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import API_BASE_URL from '../config/api'
 import './AdminDashboard.css'
@@ -21,6 +21,7 @@ function AdminDashboard() {
   const [showForm, setShowForm] = useState(false)
   const [saving, setSaving] = useState(false)
   const [form, setForm] = useState(emptyProduct)
+  const [editingProductId, setEditingProductId] = useState(null)
 
   const fetchProducts = async () => {
     setLoading(true)
@@ -51,6 +52,67 @@ function AdminDashboard() {
     setForm((current) => ({ ...current, [name]: value }))
   }
 
+  const handleEdit = (product) => {
+    setError('')
+    setSuccess('')
+    setShowForm(true)
+
+    setEditingProductId(product.id)
+
+    setForm({
+      id: String(product.id),
+      name: product.name,
+      category: product.category,
+      price: String(product.price),
+      image: product.image,
+      description: product.description,
+      rating: String(product.rating ?? 0),
+    })
+  }
+
+
+  const handleDelete = async (product) => {
+    const confirmed = window.confirm(
+      `Are you sure you want to delete "${product.name}"?`,
+    )
+
+    if (!confirmed) return
+
+    setError('')
+    setSuccess('')
+
+    try {
+      const token = localStorage.getItem('cartoraToken')
+
+      if (!token) {
+        throw new Error('Please sign in with an administrator account.')
+      }
+
+      const response = await fetch(
+        `${API_BASE_URL}/api/products/${product.id}`,
+        {
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      )
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Could not delete product.')
+      }
+
+      setSuccess('Product deleted successfully.')
+      await fetchProducts()
+    } catch (err) {
+      setError(err.message || 'Could not delete product.')
+    }
+  }
+
+
+
   const handleSubmit = async (event) => {
     event.preventDefault()
     setError('')
@@ -64,36 +126,55 @@ function AdminDashboard() {
         throw new Error('Please sign in with an administrator account.')
       }
 
-      const response = await fetch(`${API_BASE_URL}/api/products`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
+      const isEditing = editingProductId !== null
+
+      const response = await fetch(
+        isEditing
+          ? `${API_BASE_URL}/api/products/${editingProductId}`
+          : `${API_BASE_URL}/api/products`,
+        {
+          method: isEditing ? 'PUT' : 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            ...form,
+            id: Number(form.id),
+            price: Number(form.price),
+            rating: Number(form.rating),
+          }),
         },
-        body: JSON.stringify({
-          ...form,
-          id: Number(form.id),
-          price: Number(form.price),
-          rating: Number(form.rating),
-        }),
-      })
+      )
 
       const data = await response.json()
 
       if (!response.ok) {
-        throw new Error(data.message || 'Could not create product.')
+        throw new Error(
+          data.message ||
+          (isEditing
+            ? 'Could not update product.'
+            : 'Could not create product.'),
+        )
       }
 
-      setSuccess('Product added successfully.')
+      setSuccess(
+        isEditing
+          ? 'Product updated successfully.'
+          : 'Product added successfully.',
+      )
+
       setForm(emptyProduct)
+      setEditingProductId(null)
       setShowForm(false)
       await fetchProducts()
     } catch (err) {
-      setError(err.message || 'Could not create product.')
+      setError(err.message || 'Could not save product.')
     } finally {
       setSaving(false)
     }
   }
+
 
   return (
     <main className="admin-dashboard">
@@ -101,6 +182,9 @@ function AdminDashboard() {
         <p className="admin-eyebrow">CARTORA MANAGEMENT</p>
         <h1>Admin Dashboard</h1>
         <p>Manage your products and store inventory.</p>
+        <Link to="/admin/orders" className="admin-orders-link">
+          Manage Orders →
+        </Link>
       </div>
 
       <section className="admin-stats">
@@ -131,7 +215,7 @@ function AdminDashboard() {
 
         {showForm && (
           <form className="admin-product-form" onSubmit={handleSubmit}>
-            <h3>Add a new product</h3>
+            <h3>{editingProductId !== null ? 'Edit product' : 'Add a new product'}</h3>
 
             <div className="admin-form-grid">
               <label>
@@ -219,7 +303,11 @@ function AdminDashboard() {
             </div>
 
             <button type="submit" disabled={saving}>
-              {saving ? 'Saving...' : 'Save Product'}
+              {saving
+                ? 'Saving...'
+                : editingProductId !== null
+                  ? 'Update Product'
+                  : 'Save Product'}
             </button>
           </form>
         )}
@@ -244,6 +332,7 @@ function AdminDashboard() {
                   <th>Category</th>
                   <th>Price</th>
                   <th>Rating</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -258,6 +347,24 @@ function AdminDashboard() {
                     <td>{product.category}</td>
                     <td>₹{Number(product.price).toLocaleString('en-IN')}</td>
                     <td>{product.rating ?? 0}/5</td>
+
+                    <td className="admin-product-actions">
+                      <button
+                        type="button"
+                        onClick={() => handleEdit(product)}
+                      >
+                        Edit
+                      </button>
+
+                      <button
+                        type="button"
+                        className="admin-delete-button"
+                        onClick={() => handleDelete(product)}
+                      >
+                        Delete
+                      </button>
+                    </td>
+
                   </tr>
                 ))}
               </tbody>
