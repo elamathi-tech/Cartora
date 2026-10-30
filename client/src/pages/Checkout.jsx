@@ -32,59 +32,134 @@ function Checkout() {
       address: formData.get('address').trim(),
     }
 
-    const hasEmptyField = Object.values(customer).some(
-      (value) => !value,
-    )
-
-    if (hasEmptyField) {
-      setErrorMessage('Please complete all delivery details.')
-      setIsSubmitting(false)
-      return
-    }
-
     try {
-
       const token = localStorage.getItem('cartoraToken')
 
       if (!token) {
-        setErrorMessage('Please log in before placing your order.')
-        setIsSubmitting(false)
-        return
+        throw new Error('Please log in before placing your order.')
       }
 
-      const response = await fetch(`${API_BASE_URL}/api/orders`, {
+      const items = cartItems.map((item) => ({
+        productId: item.id,
+        quantity: item.quantity,
+      }))
+
+      const paymentMethod = formData.get('paymentMethod')
+
+      // Cash on Delivery
+      if (paymentMethod === 'cod') {
+        const response = await fetch(`${API_BASE_URL}/api/orders`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
           },
-
           body: JSON.stringify({
             customer,
-            paymentMethod: formData.get('paymentMethod'),
-            items: cartItems.map((item) => ({
-              productId: item.id,
-              quantity: item.quantity,
-            })),
+            paymentMethod: 'cod',
+            items,
           }),
+        })
 
+        const data = await response.json()
+
+        if (!response.ok || !data.success) {
+          throw new Error(data.message || 'Could not place your order.')
+        }
+
+        setSuccessOrder(data.order)
+        await clearCart()
+        return
+      }
+
+      // Create Razorpay order
+      const response = await fetch(
+        `${API_BASE_URL}/api/payments/create-order`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ customer, items }),
         },
       )
-
 
       const data = await response.json()
 
       if (!response.ok || !data.success) {
-        throw new Error(
-          data.message || 'Could not place your order.',
-        )
+        throw new Error(data.message || 'Could not create payment order.')
       }
 
-      setSuccessOrder(data.order)
-      await clearCart()
+      const options = {
+        key: data.keyId,
+        amount: data.amount,
+        currency: data.currency,
+        name: 'Cartora',
+        description: 'Cartora Order Payment',
+        order_id: data.orderId,
+
+        prefill: {
+          name: customer.name,
+          email: customer.email,
+          contact: customer.phone,
+        },
+
+        theme: {
+          color: '#b66b50',
+        },
+
+        handler: async function (paymentResponse) {
+          try {
+            const verifyResponse = await fetch(
+              `${API_BASE_URL}/api/payments/verify-payment`,
+              {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                  ...paymentResponse,
+                  cartoraOrderId: data.cartoraOrderId,
+                }),
+              },
+            )
+
+            const verifyData = await verifyResponse.json()
+
+            if (!verifyResponse.ok || !verifyData.success) {
+              throw new Error(
+                verifyData.message || 'Payment verification failed.',
+              )
+            }
+
+            setSuccessOrder(verifyData.order)
+            await clearCart()
+          } catch (error) {
+            console.error('Payment verification error:', error)
+            setErrorMessage(error.message)
+          }
+        },
+
+        modal: {
+          ondismiss: function () {
+            setErrorMessage('Payment was cancelled. You can try again.')
+          },
+        },
+      }
+
+      const razorpay = new window.Razorpay(options)
+
+      razorpay.on('payment.failed', function (paymentError) {
+        setErrorMessage(
+          paymentError.error.description || 'Payment failed. Please try again.',
+        )
+      })
+
+      razorpay.open()
     } catch (error) {
       console.error('Checkout error:', error)
-
       setErrorMessage(
         error.message || 'Something went wrong. Please try again.',
       )
@@ -112,13 +187,13 @@ function Checkout() {
         </p>
         <p>Order status: {successOrder.status}</p>
         <p>
-  Payment method:{' '}
-  <strong>
-    {successOrder.paymentMethod === 'cod'
-      ? 'Cash on Delivery'
-      : successOrder.paymentMethod}
-  </strong>
-</p>
+          Payment method:{' '}
+          <strong>
+            {successOrder.paymentMethod === 'cod'
+              ? 'Cash on Delivery'
+              : successOrder.paymentMethod}
+          </strong>
+        </p>
         <Link className='primary-button' to='/shop'>
           Continue shopping ↗
         </Link>
@@ -198,9 +273,7 @@ function Checkout() {
             required
           >
             <option value='cod'>Cash on Delivery</option>
-            <option value='online' disabled>
-              Online payment — coming soon
-            </option>
+            <option value='razorpay'>Pay Online (Razorpay Test Mode)</option>
           </select>
 
 

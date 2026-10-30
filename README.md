@@ -1,44 +1,61 @@
 # Cartora — MERN E-Commerce Application
 
-Cartora is a full-stack e-commerce web application built with the MERN stack. It provides product browsing, shopping cart management, user authentication, checkout, and order tracking.
+Cartora is a full-stack e-commerce web application built using the MERN stack. It provides a modern shopping experience with product browsing, search and filtering, shopping cart management, user authentication, checkout, online payments, and order tracking.
+
+## Live Demo
+
+- **Frontend:** https://cartora-taupe.vercel.app
+
+- **Backend API:** https://cartora-backend-0fjd.onrender.com
 
 ## Features
 
-- **Product browsing:** View products, search, and filter by category.
-- **Product details:** View product information and add items to the cart.
-- **Shopping cart:** Add products, update quantities, remove items, and view totals.
-- **User authentication:** Register, log in, and access protected pages.
-- **Cart persistence:** Maintain a guest cart and synchronize it after login.
-- **Checkout:** Submit delivery details and place orders using Cash on Delivery.
-- **Order history:** View previous orders from the account page.
-- **Profile management:** Update account information.
-- **Backend API:** Manage products, users, carts, and orders through Express routes.
+- **Product Browsing:** View products, search, and filter by category.
+- **Product Details:** View product information and add items to the cart.
+- **Shopping Cart:** Add products, update quantities, remove items, and view totals.
+- **User Authentication:** Register, log in, and access protected pages.
+- **Cart Persistence:** Maintain a guest cart and synchronize it after login.
+- **Checkout:** Enter delivery details and place orders.
+- **Multiple Payment Methods:** Pay using Cash on Delivery or Razorpay Test Mode.
+- **Razorpay Integration:** Create payment orders, open Razorpay Checkout, and verify payment signatures on the backend.
+- **Order History:** View previous orders from the account page.
+- **Profile Management:** Update account information.
+- **Admin Dashboard:** Manage products and customer orders.
+- **Backend API:** Manage products, users, carts, payments, and orders through Express routes.
 - **Database:** Store application data in MongoDB using Mongoose.
 
 ## Technology Stack
 
-**Frontend**
+### Frontend
 - React
 - Vite
 - JavaScript
 - CSS
 - React Router
 
-**Backend**
+### Backend
 - Node.js
 - Express.js
 - MongoDB
 - Mongoose
 - JSON Web Tokens (JWT)
-- bcrypt for password hashing
+- bcrypt
+- Razorpay Node.js SDK
+
+### Deployment
+- Vercel — Frontend hosting
+- Render — Backend hosting
+- MongoDB Atlas — Cloud database
+- Razorpay — Payment gateway (Test Mode)
 
 ## Project Structure
 
 ```text
 Cartora/
-├── client/       # React frontend
+├── client/                 # React frontend
 │   └── src/
-├── server/       # Express backend
+├── server/                 # Express backend
+│   ├── config/
 │   ├── middleware/
 │   ├── models/
 │   ├── routes/
@@ -53,17 +70,18 @@ Cartora/
 - Node.js and npm
 - MongoDB Atlas account or a MongoDB instance
 - Git
+- Razorpay account for Test Mode payment integration
 
 ## Getting Started
 
-### 1. Clone the repository
+### 1. Clone the Repository
 
 ```bash
 git clone <your-github-repository-url>
 cd Cartora
 ```
 
-### 2. Configure the backend
+### 2. Configure the Backend
 
 ```bash
 cd server
@@ -76,9 +94,13 @@ Create a `.env` file inside the `server` directory:
 PORT=5000
 MONGODB_URI=your_mongodb_connection_string
 JWT_SECRET=your_strong_secret
+RAZORPAY_KEY_ID=your_razorpay_test_key_id
+RAZORPAY_KEY_SECRET=your_razorpay_test_key_secret
 ```
 
-Replace the example values with your own credentials. Never commit secrets to GitHub.
+Replace the example values with your own credentials.
+
+**Important:** Never commit `.env` files, database credentials, JWT secrets, or Razorpay secret keys to GitHub.
 
 Start the backend:
 
@@ -86,9 +108,9 @@ Start the backend:
 npm run dev
 ```
 
-The backend runs locally on port 5000 by default.
+The backend runs locally on port `5000` by default.
 
-### 3. Configure the frontend
+### 3. Configure the Frontend
 
 Open a second terminal:
 
@@ -97,9 +119,9 @@ cd client
 npm install
 ```
 
-For local development, the frontend uses `http://localhost:5000` by default.
+For local development, the frontend uses `http://localhost:5000` as the backend API address by default.
 
-To configure another backend address, set the `VITE_API_URL` environment variable to the backend's base URL.
+To configure another backend address, set the `VITE_API_URL` environment variable to your backend's base URL, if required by the frontend configuration.
 
 Start the frontend:
 
@@ -109,6 +131,23 @@ npm run dev
 
 Open the local URL printed by Vite in your terminal.
 
+## Payment Integration
+
+Cartora supports two payment methods:
+
+### Cash on Delivery
+Customers can place orders and pay when their products are delivered.
+
+### Razorpay Test Mode
+- Creates payment orders through the backend.
+- Calculates order amounts using product prices stored in MongoDB.
+- Opens Razorpay Checkout on the frontend.
+- Verifies payment signatures securely on the backend.
+- Updates the order's payment status after successful verification.
+- Stores Razorpay order and payment references in MongoDB.
+
+**Note:** Razorpay is configured for Test Mode. Test transactions do not represent real payments. Live payments require separate Razorpay activation and production credentials.
+
 ## Available Scripts
 
 ### Frontend
@@ -116,7 +155,7 @@ Open the local URL printed by Vite in your terminal.
 | Command | Purpose |
 |---|---|
 | `npm run dev` | Start the development server |
-| `npm run lint` | Run ESLint |
+| `npm run lint` | Run the code linter |
 | `npm run build` | Create a production build |
 | `npm run preview` | Preview the production build |
 
@@ -127,22 +166,34 @@ Open the local URL printed by Vite in your terminal.
 | `npm run dev` | Start the development server with Nodemon |
 | `npm start` | Start the server with Node.js |
 
+## Deployment Environment Variables
+
+Configure the following variables in the Render backend service:
+
+| Variable | Description |
+|---|---|
+| `MONGODB_URI` | MongoDB Atlas connection string |
+| `JWT_SECRET` | Secret used for JWT authentication |
+| `RAZORPAY_KEY_ID` | Razorpay Test Mode Key ID |
+| `RAZORPAY_KEY_SECRET` | Razorpay Test Mode Key Secret |
+| `PORT` | Server port (provided by Render in production) |
+
+Configure the frontend's API base URL to point to the deployed backend.
+
 ## Security Notes
 
 - Environment files and credentials must not be committed.
 - Passwords are hashed before storage.
 - Protected endpoints require authentication.
-- Administrative product-management endpoints require the appropriate role.
-
-## Current Payment Support
-
-Cash on Delivery is supported. Online payment integration is not currently enabled.
+- Administrative endpoints require the appropriate role.
+- Razorpay payment signatures are verified on the backend.
+- Razorpay secret keys are never exposed to the frontend.
 
 ## Project Status
 
-The core customer workflow has been tested locally, including registration, login, product browsing, cart operations, checkout, order placement, order history, and profile updates.
+Cartora includes the core e-commerce workflow, customer authentication, product and cart management, checkout, order processing, admin functionality, and Razorpay Test Mode integration.
 
-Deployment and final submission details will be added when available.
+The frontend and backend are deployed using Vercel and Render, respectively.
 
 ## Author
 

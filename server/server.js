@@ -7,6 +7,7 @@ const productRoutes = require('./routes/productRoutes')
 const orderRoutes = require('./routes/orderRoutes')
 const authRoutes = require('./routes/authRoutes')
 const cartRoutes = require('./routes/cartRoutes')
+const paymentRoutes = require('./routes/paymentRoutes')
 const authMiddleware = require('./middleware/authMiddleware')
 
 const app = express()
@@ -19,6 +20,7 @@ app.use('/api/products', productRoutes)
 app.use('/api/orders', orderRoutes)
 app.use('/api/auth', authRoutes)
 app.use('/api/cart', cartRoutes)
+app.use('/api/payments', paymentRoutes)
 
 //Test route to check whether the backend is running
 app.get('/api/health', (req, res) => {
